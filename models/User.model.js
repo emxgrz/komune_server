@@ -13,6 +13,13 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Password is required.']
     },
+    username: {  
+      type: String,
+      required: [true, 'Username is required.'],
+      unique: true,
+      lowercase: true,
+      trim: true
+    },
     service: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -21,8 +28,7 @@ const userSchema = new Schema(
     ]
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`    
-    timestamps: true
+    timestamps: true // Agrega createdAt y updatedAt
   }
 );
 
