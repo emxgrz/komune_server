@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const User = require("../models/User.model");
 const { verifyToken } = require("../middlewares/auth.middlewares");
+const { mongoose } = require("mongoose");
+
 
 // GET "/api/user" => obtiene la información de todos los usuarios
 router.get("/", async (req, res, next) => {
@@ -27,6 +29,17 @@ router.get("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
+router.get("/profile", verifyToken, async (req, res, next) => {
+  try {
+    const response = await User.findById(req.payload._id).
+    res.status(200).json(response);
+  } 
+  catch (error) {
+    next(error)  
+  }
+})
+
 
 // PUT "/api/user/:id" => actualiza la información de un usuario específico (requiere autenticación)
 router.put("/:id", verifyToken, async (req, res, next) => {

@@ -17,6 +17,6 @@ const reviewRouter = require("./review.routes");
 router.use("/review", reviewRouter);
 
 const userRoutes = require("./user.routes")
-router.use("/users", userRoutes)
+router.use("/user", userRoutes)
 
 module.exports = router;
