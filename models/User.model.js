@@ -13,24 +13,74 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Password is required.']
     },
-    username: {  
+    username: {
       type: String,
       required: [true, 'Username is required.'],
       unique: true,
       lowercase: true,
       trim: true
     },
-    service: [
+    firstName: {
+      type: String,
+      trim: true
+    },
+    lastName: {
+      type: String,
+      trim: true
+    },
+    dateOfBirth: {
+      type: Date
+    },
+    location: {
+      city: {
+        type: String,
+        trim: true 
+      },
+      country: {
+        type: String,
+        trim: true
+      }
+    },
+    image: {
+      type: String, 
+      default: 'default-image-url' 
+    },
+    description: {
+      type: String, 
+      trim: true
+    },
+    followersCount: {
+      type: Number,
+      default: 0
+    },
+    followingCount: {
+      type: Number,
+      default: 0
+    },
+    following: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Service"
+        ref: "User"
+      }
+    ],
+    work: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Work"
+      }
+    ],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review"
       }
     ]
   },
   {
-    timestamps: true // Agrega createdAt y updatedAt
+    timestamps: true
   }
 );
+
 
 const User = model("User", userSchema);
 

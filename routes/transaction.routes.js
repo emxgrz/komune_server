@@ -2,21 +2,26 @@ const router = require("express").Router();
 const Transaction = require("../models/Transaction.model");
 const { verifyToken } = require("../middlewares/auth.middlewares");
 
+
+
 // POST "/api/transaction" => crea una nueva transacción (requiere autenticación)
 router.post("/", verifyToken, async (req, res, next) => {
-  const { service, professional, client, status } = req.body;
+  const { work, professional, client, status } = req.body;
 
-  if (!service || !professional || !client || !status) {
+  if (!work || !professional || !client || !status) {
     return res.status(400).json({ message: "Todos los campos son requeridos" });
   }
 
   try {
     const newTransaction = await Transaction.create({
-      service,
+      work,
       professional,
       client,
       status,
-    });
+    });    
+
+    
+
     res.status(201).json(newTransaction);
   } catch (error) {
     next(error);
@@ -27,7 +32,7 @@ router.post("/", verifyToken, async (req, res, next) => {
 router.get("/", verifyToken, async (req, res, next) => {
   try {
     const transactions = await Transaction.find()
-      .populate("service")
+      .populate("work")
       .populate("professional")
       .populate("client");
     res.status(200).json(transactions);
@@ -42,7 +47,7 @@ router.get("/:id", verifyToken, async (req, res, next) => {
 
   try {
     const transaction = await Transaction.findById(id)
-      .populate("service")
+      .populate("work")
       .populate("professional")
       .populate("client");
     if (!transaction) {

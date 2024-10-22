@@ -7,7 +7,7 @@ router.get("/", (req, res, next) => {
 const authRouter = require("./auth.routes");
 router.use("/auth", authRouter);
 
-const serviceRouter = require("./service.routes");
+const serviceRouter = require("./work.routes");
 router.use("/service", serviceRouter);
 
 const transactionRouter = require("./transaction.routes");

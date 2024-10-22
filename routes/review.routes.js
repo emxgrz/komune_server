@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Review = require("../models/Review.model");
-const Transaction = require("../models/Transaction.model"); // Asegúrate de que el modelo Transaction esté importado
+const Transaction = require("../models/Transaction.model"); 
 const { verifyToken } = require("../middlewares/auth.middlewares");
 
 router.post("/", verifyToken, async (req, res, next) => {

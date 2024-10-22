@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema({
-  service: { type: mongoose.Schema.Types.ObjectId, ref: "Service", required: true },
+  work: { type: mongoose.Schema.Types.ObjectId, ref: "Work", required: true },
   professional: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   client: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   status: { type: String, enum: ["en progreso...", "completado", "cancelado"], default: "en progreso..." },

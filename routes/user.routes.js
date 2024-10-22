@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User.model");
+const Work = require("../models/Work.model");
+
 const { verifyToken } = require("../middlewares/auth.middlewares");
 const { mongoose } = require("mongoose");
 
@@ -15,7 +17,22 @@ router.get("/", async (req, res, next) => {
 });
 
 // GET "/api/user/:id" => obtiene la información de un usuario específico por ID
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", verifyToken, async (req, res, next) => {
+  const { id } = req.params;
+  
+  try {
+    const user = await User.findById(id).populate("work");
+    if (!user) {
+      res.status(404).json({ message: "Usuario no encontrado" });
+      return;
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/search/:id", async (req, res, next) => {
   const { id } = req.params;
   
   try {
@@ -30,15 +47,6 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.get("/profile", verifyToken, async (req, res, next) => {
-  try {
-    const response = await User.findById(req.payload._id).
-    res.status(200).json(response);
-  } 
-  catch (error) {
-    next(error)  
-  }
-})
 
 
 // PUT "/api/user/:id" => actualiza la información de un usuario específico (requiere autenticación)
