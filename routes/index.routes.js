@@ -8,7 +8,7 @@ const authRouter = require("./auth.routes");
 router.use("/auth", authRouter);
 
 const serviceRouter = require("./work.routes");
-router.use("/service", serviceRouter);
+router.use("/work", serviceRouter);
 
 const transactionRouter = require("./transaction.routes");
 router.use("/transaction", transactionRouter);

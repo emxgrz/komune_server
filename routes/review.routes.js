@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const Review = require("../models/Review.model");
 const Transaction = require("../models/Transaction.model"); 
+const User = require("../models/User.model")
 const { verifyToken } = require("../middlewares/auth.middlewares");
 
 router.post("/", verifyToken, async (req, res, next) => {
-  const { transaction, reviewer, rating, comment } = req.body;
+  const { transaction, reviewer, reviewed, rating, comment } = req.body;
 
   if (!transaction || !reviewer || !rating) {
     return res.status(400).json({ message: "Los campos transacción, revisor y calificación son requeridos" });
@@ -23,20 +24,24 @@ router.post("/", verifyToken, async (req, res, next) => {
     const newReview = await Review.create({
       transaction,
       reviewer,
+      reviewed,
       rating,
       comment,
     });
+
+    await User.findByIdAndUpdate(reviewed, { $push: { review: newReview._id } });
     res.status(201).json(newReview);
   } catch (error) {
     next(error);
   }
 });
 
-router.get("/", verifyToken, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const reviews = await Review.find()
       .populate("transaction")
-      .populate("reviewer");
+      .populate("reviewer")
+      .populate("reviewed")
     res.status(200).json(reviews);
   } catch (error) {
     next(error);

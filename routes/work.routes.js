@@ -72,12 +72,12 @@ router.get("/my-works", verifyToken, async (req, res, next) => {
 
 // gets the works of A user
 
-router.get("/user/:id", async (req, res, next) => {
-  const { id } = req.params;
+router.get("/user/:userId", async (req, res, next) => {
+  const { userId } = req.params;
 
   try {
-    // Buscar todos los servicios del profesional con el ID proporcionado
-    const works = await Work.find({ professional: id }).populate("professional");
+    
+    const works = await Work.find({ professional: userId }).populate("professional");
     
     if (works.length === 0) {
       return res.status(404).json({ message: "No se encontraron servicios para este profesional." });

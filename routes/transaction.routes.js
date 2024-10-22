@@ -20,7 +20,8 @@ router.post("/", verifyToken, async (req, res, next) => {
       status,
     });    
 
-    
+    await User.findByIdAndUpdate(professional, { $push: { transaction: newTransaction._id } });
+    await User.findByIdAndUpdate(client, { $push: { transaction: newTransaction._id } });
 
     res.status(201).json(newTransaction);
   } catch (error) {
@@ -28,8 +29,8 @@ router.post("/", verifyToken, async (req, res, next) => {
   }
 });
 
-// GET "/api/transaction" => obtiene todas las transacciones (requiere autenticación)
-router.get("/", verifyToken, async (req, res, next) => {
+// GET "/api/transaction" => obtiene todas las transacciones 
+router.get("/", async (req, res, next) => {
   try {
     const transactions = await Transaction.find()
       .populate("work")
@@ -41,8 +42,8 @@ router.get("/", verifyToken, async (req, res, next) => {
   }
 });
 
-// GET "/api/transaction/:id" => obtiene una transacción específica por ID (requiere autenticación)
-router.get("/:id", verifyToken, async (req, res, next) => {
+// GET "/api/transaction/:id" => obtiene una transacción específica por ID 
+router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
 
   try {

@@ -17,11 +17,11 @@ router.get("/", async (req, res, next) => {
 });
 
 // GET "/api/user/:id" => obtiene la información de un usuario específico por ID
-router.get("/:id", verifyToken, async (req, res, next) => {
-  const { id } = req.params;
+router.get("/:userId", async (req, res, next) => {
+  const { userId } = req.params;
   
   try {
-    const user = await User.findById(id).populate("work");
+    const user = await User.findById(userId).populate("work");
     if (!user) {
       res.status(404).json({ message: "Usuario no encontrado" });
       return;
