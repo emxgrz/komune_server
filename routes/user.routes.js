@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User.model");
 const Work = require("../models/Work.model");
+const Transaction = require("../models/Transaction.model");
 
 const { verifyToken } = require("../middlewares/auth.middlewares");
 const { mongoose } = require("mongoose");
@@ -21,7 +22,9 @@ router.get("/:userId", async (req, res, next) => {
   const { userId } = req.params;
   
   try {
-    const user = await User.findById(userId).populate("work");
+    const user = await User.findById(userId)
+    .populate("work")
+    .populate("transactions");
     if (!user) {
       res.status(404).json({ message: "Usuario no encontrado" });
       return;
@@ -51,20 +54,35 @@ router.get("/search/:id", async (req, res, next) => {
 
 // PUT "/api/user/:id" => actualiza la información de un usuario específico (requiere autenticación)
 router.put("/:id", verifyToken, async (req, res, next) => {
-  const { id } = req.params;
-  const { username, email } = req.body;
+  const userId = req.payload._id; // Suponiendo que tienes el ID del usuario en el payload del token
+  const { username, email, firstName, lastName, dateOfBirth, location, description, image } = req.body;
 
+  console.log(req.body)
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, { username, email }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        username,
+        email,
+        firstName,
+        lastName,
+        dateOfBirth,
+        location,
+        description,
+        image
+      },
+      { new: true, runValidators: true } 
+    );
+
     if (!updatedUser) {
-      res.status(404).json({ message: "Usuario no encontrado" });
-      return;
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
     res.status(200).json(updatedUser);
   } catch (error) {
     next(error);
   }
 });
+
 
 // DELETE "/api/user/:id" => elimina un usuario específico (requiere autenticación)
 router.delete("/:id", verifyToken, async (req, res, next) => {

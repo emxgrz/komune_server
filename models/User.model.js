@@ -42,8 +42,8 @@ const userSchema = new Schema(
       }
     },
     image: {
-      type: String, 
-      default: 'default-image-url' 
+      type: String,
+      default: "https://i.pinimg.com/564x/57/00/c0/5700c04197ee9a4372a35ef16eb78f4e.jpg"
     },
     description: {
       type: String, 

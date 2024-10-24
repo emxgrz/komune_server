@@ -1,14 +1,15 @@
 const router = require("express").Router();
 const Transaction = require("../models/Transaction.model");
 const { verifyToken } = require("../middlewares/auth.middlewares");
+const User = require("../models/User.model")
 
 
 
 // POST "/api/transaction" => crea una nueva transacción (requiere autenticación)
 router.post("/", verifyToken, async (req, res, next) => {
-  const { work, professional, client, status } = req.body;
+  const { work, professional, client, status, title, description } = req.body;
 
-  if (!work || !professional || !client || !status) {
+  if (!work || !professional || !client ) {
     return res.status(400).json({ message: "Todos los campos son requeridos" });
   }
 
@@ -17,7 +18,9 @@ router.post("/", verifyToken, async (req, res, next) => {
       work,
       professional,
       client,
-      status,
+      title,
+      description,
+      status
     });    
 
     await User.findByIdAndUpdate(professional, { $push: { transaction: newTransaction._id } });
@@ -30,17 +33,26 @@ router.post("/", verifyToken, async (req, res, next) => {
 });
 
 // GET "/api/transaction" => obtiene todas las transacciones 
-router.get("/", async (req, res, next) => {
+// Ruta para obtener las transacciones del usuario autenticado
+router.get("/", verifyToken, async (req, res, next) => {
   try {
-    const transactions = await Transaction.find()
-      .populate("work")
-      .populate("professional")
-      .populate("client");
+    const userId = req.payload._id; 
+    const transactions = await Transaction.find({
+      $or: [
+        { professional: userId },
+        { client: userId }  
+      ]
+    })
+    .populate("work")  
+    .populate("professional") 
+    .populate("client");    
+
     res.status(200).json(transactions);
   } catch (error) {
     next(error);
   }
 });
+
 
 // GET "/api/transaction/:id" => obtiene una transacción específica por ID 
 router.get("/:id", async (req, res, next) => {
