@@ -85,7 +85,19 @@ router.put("/:id", verifyToken, async (req, res, next) => {
   }
 });
 
+router.delete("/:id", verifyToken, async (req, res, next) => {
+  const { id } = req.params;
 
+  try {
+    const deletedReview = await Review.findByIdAndDelete(id);
+    if (!deletedReview) {
+      return res.status(404).json({ message: "Review no encontrada" });
+    }
+    res.status(200).json({ message: "Transacción eliminada correctamente" });
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 

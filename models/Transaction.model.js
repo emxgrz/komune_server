@@ -6,7 +6,7 @@ const transactionSchema = new mongoose.Schema({
   client: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   title: {type:String, required:true},
   description: {type: String, required:true},
-  status: { type: String, enum: ["en progreso...", "completado", "cancelado"], default: "en progreso..." },
+  status: { type: String},
   createdAt: { type: Date, default: Date.now },
   completedAt: { type: Date }
 });
